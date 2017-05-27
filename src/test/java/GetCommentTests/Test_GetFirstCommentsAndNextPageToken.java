@@ -1,6 +1,5 @@
 package GetCommentTests;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -24,14 +23,11 @@ public class Test_GetFirstCommentsAndNextPageToken {
       String videoId = "AHQshv_WFWA";
 
       List<CommentThread> videoComments = YouTubeUtil.getAllComments(videoId);
-
       if (videoComments.isEmpty()) {
         System.out.println("Can't get video comments.");
         fail();
       } else {
         // Print information from the API response.
-        System.out.println("Collected: " + videoComments.size() + " comments");
-        assertEquals(20, videoComments.size());
         System.out.println("\n================== Returned Video Comments ==================\n");
         for (CommentThread videoComment : videoComments) {
           CommentSnippet snippet = videoComment.getSnippet().getTopLevelComment().getSnippet();
@@ -39,6 +35,7 @@ public class Test_GetFirstCommentsAndNextPageToken {
           System.out.println("  - Comment: " + snippet.getTextDisplay());
           System.out.println("\n-------------------------------------------------------------\n");
         }
+        System.out.println("Collected: " + videoComments.size() + " comments");
       }
 
     } catch (GoogleJsonResponseException e) {

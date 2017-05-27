@@ -1,6 +1,7 @@
 package youTubeHelper;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.api.client.auth.oauth2.Credential;
@@ -45,9 +46,27 @@ public class YouTubeUtil {
 
     // Call the YouTube Data API's commentThreads.list method to
     // retrieve video comment threads.
-    CommentThreadListResponse videoCommentsListResponse = youtube.commentThreads().list("snippet").setVideoId(videoId)
-        .setTextFormat("plainText").execute();
+    String npToken = null;
+    List<CommentThread> returnList = new ArrayList<CommentThread>();
+    do {
+      CommentThreadListResponse videoCommentsListResponse = getVideoCommentListResponse(videoId, npToken);
+      npToken = videoCommentsListResponse.getNextPageToken();
+      returnList.addAll(videoCommentsListResponse.getItems());
+      // System.out.println("Size: " + returnList.size() + ", npToken: " + npToken);
+    } while (npToken != null);
 
-    return videoCommentsListResponse.getItems();
+    return returnList;
+  }
+
+  private static CommentThreadListResponse getVideoCommentListResponse(String videoId, String pageToken) throws IOException {
+    if (youtube == null) {
+      throw new RuntimeException("youtube object not initialized");
+    }
+    if (pageToken == null) {
+      return youtube.commentThreads().list("snippet").setVideoId(videoId).setTextFormat("plainText").setMaxResults(100L).execute();
+    } else {
+      return youtube.commentThreads().list("snippet").setVideoId(videoId).setTextFormat("plainText").setMaxResults(100L)
+          .setPageToken(pageToken).execute();
+    }
   }
 }
