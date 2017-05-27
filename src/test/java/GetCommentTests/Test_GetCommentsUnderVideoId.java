@@ -13,7 +13,7 @@ import com.google.api.services.youtube.model.CommentThread;
 
 import youTubeHelper.YouTubeUtil;
 
-public class Test_GetFirstCommentsAndNextPageToken {
+public class Test_GetCommentsUnderVideoId {
 
   @Test
   public void getComments() {
