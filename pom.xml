@@ -25,16 +25,24 @@
       <artifactId>google-api-services-youtube</artifactId>
       <version>v3-rev183-1.22.0</version>
     </dependency>
-
-        <dependency>
-            <groupId>com.google.oauth-client</groupId>
-            <artifactId>google-oauth-client-jetty</artifactId>
-            <version>${project.oauth.version}</version>
-        </dependency>
-
+    <dependency>
+      <groupId>com.google.oauth-client</groupId>
+      <artifactId>google-oauth-client-jetty</artifactId>
+      <version>${project.oauth.version}</version>
+    </dependency>
+	<dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8.1</version>
+	</dependency>
   </dependencies> 
   <build>
-    <sourceDirectory>src</sourceDirectory>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <resources>
+     <resource>
+     <directory>src/main/resources</directory>
+     </resource>
+    </resources>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
