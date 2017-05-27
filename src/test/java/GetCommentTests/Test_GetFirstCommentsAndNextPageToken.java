@@ -1,4 +1,6 @@
 package GetCommentTests;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -18,6 +20,7 @@ public class Test_GetFirstCommentsAndNextPageToken {
   public void getComments() {
 
     try {
+      // Video: Carmilla | S1 E16 "Best Laid Plans"
       String videoId = "AHQshv_WFWA";
 
       List<CommentThread> videoComments = YouTubeUtil.getAllComments(videoId);
@@ -28,6 +31,7 @@ public class Test_GetFirstCommentsAndNextPageToken {
       } else {
         // Print information from the API response.
         System.out.println("Collected: " + videoComments.size() + " comments");
+        assertEquals(20, videoComments.size());
         System.out.println("\n================== Returned Video Comments ==================\n");
         for (CommentThread videoComment : videoComments) {
           CommentSnippet snippet = videoComment.getSnippet().getTopLevelComment().getSnippet();
