@@ -3,14 +3,17 @@ package GetCommentTests;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.Test;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
-import com.google.api.services.youtube.model.CommentSnippet;
 import com.google.api.services.youtube.model.CommentThread;
 
+import databaseHelper.DatabaseUtil;
 import youTubeHelper.YouTubeUtil;
 
 public class Test_GetCommentsUnderVideoId {
@@ -23,23 +26,15 @@ public class Test_GetCommentsUnderVideoId {
       // String videoId = "AHQshv_WFWA";
 
       // Having sex as a trans lesbian | Riley J. Dennis
-      String videoId = "d71qtY9jvto";
-
+      // String videoId = "d71qtY9jvto";
+      String videoId = "rdyeqJO55fU";
       List<CommentThread> videoComments = YouTubeUtil.getAllComments(videoId);
       if (videoComments.isEmpty()) {
         System.out.println("Can't get video comments.");
         fail();
-      } else {
-        // Print information from the API response.
-        System.out.println("\n================== Returned Video Comments ==================\n");
-        for (CommentThread videoComment : videoComments) {
-          CommentSnippet snippet = videoComment.getSnippet().getTopLevelComment().getSnippet();
-          System.out.println("  - Author: " + snippet.getAuthorDisplayName());
-          System.out.println("  - Comment: " + snippet.getTextDisplay());
-          System.out.println("\n-------------------------------------------------------------\n");
-        }
-        System.out.println("Collected: " + videoComments.size() + " comments");
       }
+
+      DatabaseUtil.storeYoutubeComments(videoComments);
 
     } catch (GoogleJsonResponseException e) {
       System.err.println("GoogleJsonResponseException code: " + e.getDetails().getCode() + " : " + e.getDetails().getMessage());
@@ -54,5 +49,10 @@ public class Test_GetCommentsUnderVideoId {
       t.printStackTrace();
       fail();
     }
+  }
+
+  private Connection getConnection(String address, String user, String pass) throws SQLException {
+    final String serverURI = "jdbc:mysql://" + address;
+    return DriverManager.getConnection(serverURI, user, pass);
   }
 }

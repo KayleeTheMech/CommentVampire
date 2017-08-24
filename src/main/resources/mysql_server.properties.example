@@ -1,0 +1,5 @@
+# Contains login information for the used database
+
+serverAddress	yourdatabase.server.address.here.de
+databaseUser 	dbUser
+databasePass	n014_r341_P4ssw0rD
