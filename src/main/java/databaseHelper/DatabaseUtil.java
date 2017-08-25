@@ -17,8 +17,6 @@ import com.google.api.services.youtube.model.CommentThread;
 
 public class DatabaseUtil {
 
-  private static final int BATCH_SIZE = 50;
-
   public static void storeYoutubeComments(List<CommentThread> videoComments) throws SQLException {
 
     if (videoComments.isEmpty()) {
@@ -29,24 +27,31 @@ public class DatabaseUtil {
 
     statement = getConnection().prepareStatement(
         "INSERT INTO haeqs_trolle.YoutubeComments (youtubeCommentId, videoId, authorUserID, authorDisplayName, commentText) VALUES (?,?,?,?,?)");
-
+    int alreadyloaded = 0;
+    int added = 0;
     for (int i = 0; i < videoComments.size(); i++) {
       CommentThread videoComment = videoComments.get(i);
       Comment comment = videoComment.getSnippet().getTopLevelComment();
-      statement.setString(1, comment.getId());
-      statement.setString(2, comment.getSnippet().getVideoId());
-      statement.setString(3, comment.getSnippet().getChannelId());
-      statement.setString(4, comment.getSnippet().getAuthorDisplayName());
-      statement.setString(5, comment.getSnippet().getTextDisplay());
-      statement.addBatch();
-      if (i % BATCH_SIZE == 0) {
-        statement.executeBatch();
+      try {
+        statement.setString(1, comment.getId());
+        statement.setString(2, comment.getSnippet().getVideoId());
+        statement.setString(3, comment.getSnippet().getChannelId());
+        statement.setString(4, comment.getSnippet().getAuthorDisplayName());
+        statement.setString(5, comment.getSnippet().getTextDisplay());
+        statement.executeUpdate();
+        added++;
+      } catch (SQLException e) {
+        if (e.getSQLState().equals("23000") && e.getMessage().startsWith("Duplicate entry")) {
+          alreadyloaded++;
+          statement.clearBatch();
+        } else
+          throw e;
       }
-    }
-    statement.executeBatch();
-    statement.executeUpdate();
-    statement.close();
 
+    }
+    statement.close();
+    System.out.println("From a total " + videoComments.size() + "  comments " + added + " were uploaded to the DB.");
+    System.out.println("Identical " + alreadyloaded + " comments were already in the DB.");
   }
 
   public static Connection getConnection() throws SQLException {

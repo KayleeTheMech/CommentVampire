@@ -3,9 +3,6 @@ package GetCommentTests;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.List;
 
 import org.junit.Test;
@@ -51,8 +48,4 @@ public class Test_GetCommentsUnderVideoId {
     }
   }
 
-  private Connection getConnection(String address, String user, String pass) throws SQLException {
-    final String serverURI = "jdbc:mysql://" + address;
-    return DriverManager.getConnection(serverURI, user, pass);
-  }
 }
