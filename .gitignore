@@ -2,3 +2,5 @@
 target/*
 /target/
 CommentVampire.iml
+.project
+.classpath
