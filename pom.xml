@@ -20,7 +20,12 @@
       </repository>
   </repositories>
   <dependencies>
-	<dependency>
+      <dependency>
+          <groupId>net.sf.jopt-simple</groupId>
+          <artifactId>jopt-simple</artifactId>
+          <version>5.0.4</version>
+      </dependency>
+      <dependency>
     	<groupId>mysql</groupId>
     	<artifactId>mysql-connector-java</artifactId>
     	<version>5.1.43</version>
