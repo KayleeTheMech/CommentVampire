@@ -15,7 +15,7 @@ import youTubeHelper.YouTubeUtil;
 
 public class Test_GetCommentsUnderVideoId {
 
-  @Test
+  //@Test
   public void getComments() {
 
     try {
