@@ -1,7 +1,15 @@
 package CommandLineApplication;
 
+import com.google.api.services.youtube.model.CommentThread;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import static databaseHelper.DatabaseUtil.*;
+import static youTubeHelper.YouTubeUtil.getAllComments;
 
 public class Main {
 
@@ -47,7 +55,25 @@ public class Main {
      * @param videoId - the Id of the target video
      */
     private static void processVideoId(String videoId) {
-        System.out.println("Called processVideoId with Id:" + videoId);
+        System.out.println("Called processVideoId with videoId: " + videoId);
+        List<CommentThread> videoComments;
+        // trying to retrieve comments
+        try {
+            videoComments = getAllComments(videoId);
+        } catch (IOException e){
+            throw new RuntimeException(e);
+        }
+        // checking if attempt was successful
+        if (videoComments==null || videoComments.isEmpty()) {
+            throw new RuntimeException("Couldn't retrieve comments from video.");
+        }
+        // storing the comments to database
+        System.out.println("Retrieved " + videoComments.size() + " comments from videoId: " + videoId);
+        try {
+            storeYoutubeComments(videoComments);
+        } catch (SQLException e){
+            System.out.println("Error transferring comments to the database.");
+        }
     }
 
     /**
