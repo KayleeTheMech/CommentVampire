@@ -46,7 +46,12 @@ public class Main {
      * Prints the help message.
      */
     private static void printHelp() {
-        System.out.println("H-E-L-P");
+        System.out.print("Usage: \n" +
+                "-videoId (VIDEOID) uploads all comments from the Youtube Video with that Id " +
+                "-v short for -videoId" +
+                "-channelId (channelId) not implemented yet" +
+                "-? -h --help: this help message");
+
     }
 
     /**
@@ -60,18 +65,18 @@ public class Main {
         // trying to retrieve comments
         try {
             videoComments = getAllComments(videoId);
-        } catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         // checking if attempt was successful
-        if (videoComments==null || videoComments.isEmpty()) {
+        if (videoComments == null || videoComments.isEmpty()) {
             throw new RuntimeException("Couldn't retrieve comments from video.");
         }
         // storing the comments to database
         System.out.println("Retrieved " + videoComments.size() + " comments from videoId: " + videoId);
         try {
             storeYoutubeComments(videoComments);
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println("Error transferring comments to the database.");
         }
     }
