@@ -46,11 +46,19 @@ public class Main {
      * Prints the help message.
      */
     private static void printHelp() {
-        System.out.print("Usage: \n" +
-                "-videoId (VIDEOID) uploads all comments from the Youtube Video with that Id " +
-                "-v short for -videoId" +
-                "-channelId (channelId) not implemented yet" +
-                "-? -h --help: this help message");
+        final String EOL = System.getProperty("line.separator");
+        String title = Main.class.getPackage().getImplementationTitle();
+        String version = Main.class.getPackage().getImplementationVersion();
+        String vendor = Main.class.getPackage().getSpecificationVendor();
+        System.out.print(title + " " + version + EOL +
+                "A project of " + vendor + EOL +
+                "" + EOL +
+                "Available flags: " + EOL +
+                "\"-videoId {ID}\" uploads all comments from the youtube video with that id " + EOL +
+                "\"-v\" is short for -videoId" + EOL +
+                "\"-channelId {ID}\" not implemented yet" + EOL +
+                "\"-c\" is short for -channelId" + EOL +
+                "\"-?\", \"-h\" or \"--help\": prints this help message" + EOL);
 
     }
 
