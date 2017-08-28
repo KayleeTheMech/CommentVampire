@@ -6,10 +6,7 @@ import java.util.List;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.services.youtube.YouTube;
-import com.google.api.services.youtube.model.CommentThread;
-import com.google.api.services.youtube.model.CommentThreadListResponse;
-import com.google.api.services.youtube.model.PlaylistItemListResponse;
-import com.google.api.services.youtube.model.PlaylistListResponse;
+import com.google.api.services.youtube.model.*;
 import com.google.common.collect.Lists;
 
 public class YouTubeUtil {
@@ -51,8 +48,6 @@ public class YouTubeUtil {
      * @throws IOException
      */
     public static List<CommentThread> getAllComments(String videoId) throws IOException {
-
-
         // Call the YouTube Data API's commentThreads.list method to
         // retrieve video comment threads.
         String npToken = null;
@@ -61,7 +56,6 @@ public class YouTubeUtil {
             CommentThreadListResponse videoCommentsListResponse = getVideoCommentListResponse(videoId, npToken);
             npToken = videoCommentsListResponse.getNextPageToken();
             returnList.addAll(videoCommentsListResponse.getItems());
-            // System.out.println("Size: " + returnList.size() + ", npToken: " + npToken);
         } while (npToken != null);
 
         return returnList;
@@ -71,31 +65,88 @@ public class YouTubeUtil {
         initialize();
 
         if (pageToken == null) {
-            return youtube.commentThreads().list("snippet").setVideoId(videoId).setTextFormat("plainText").setMaxResults(100L).execute();
+            return youtube.commentThreads()
+                    .list("snippet")
+                    .setVideoId(videoId)
+                    .setTextFormat("plainText")
+                    .setMaxResults(100L)
+                    .execute();
         } else {
-            return youtube.commentThreads().list("snippet").setVideoId(videoId).setTextFormat("plainText").setMaxResults(100L)
-                    .setPageToken(pageToken).execute();
+            return youtube.commentThreads()
+                    .list("snippet")
+                    .setVideoId(videoId)
+                    .setTextFormat("plainText")
+                    .setMaxResults(100L)
+                    .setPageToken(pageToken)
+                    .execute();
         }
     }
 
+    public static List<Playlist> getPlaylists(String channelId) throws IOException {
+        // Call the YouTube Data API's list method
+        String npToken = null;
+        List<Playlist> returnList = new ArrayList<>();
+        do {
+            PlaylistListResponse PlaylistListResponse = YouTubeUtil.getPlaylistsResponseForChannel(channelId, npToken);
+            npToken = PlaylistListResponse.getNextPageToken();
+            returnList.addAll(PlaylistListResponse.getItems());
+        } while (npToken != null);
 
-    private static PlaylistListResponse getPlaylistsForChannel(String channelId, String pageToken) throws IOException {
+        return returnList;
+    }
+
+    private static PlaylistListResponse getPlaylistsResponseForChannel(String channelId, String pageToken) throws IOException {
         initialize();
 
         if (pageToken == null) {
-            return youtube.playlists().list("snippet").setChannelId(channelId).setMaxResults(50L).execute();
+            return youtube.playlists()
+                    .list("contentDetails")
+                    .setChannelId(channelId)
+                    .setMaxResults(50L)
+                    .execute();
         } else {
-            return youtube.playlists().list("snippet").setChannelId(channelId).setPageToken(pageToken).setMaxResults(50L).execute();
+            return youtube.playlists()
+                    .list("contentDetails")
+                    .setChannelId(channelId)
+                    .setPageToken(pageToken)
+                    .setMaxResults(50L)
+                    .execute();
         }
     }
 
-    private static PlaylistItemListResponse getVideoIdsForPlaylist(String playlistId, String pageToken) throws IOException {
+    public static List<String> getVideoIds(String playlistId) throws IOException {
+        // Call the YouTube Data API's list method
+        String npToken = null;
+        List<PlaylistItem> returnList = new ArrayList<>();
+        do {
+            PlaylistItemListResponse playlistItemResponse = YouTubeUtil.getPlaylistItemsForPlaylist(playlistId, null);
+            npToken = playlistItemResponse.getNextPageToken();
+            returnList.addAll(playlistItemResponse.getItems());
+        } while (npToken != null);
+        List<String> videoIdList= new ArrayList<>();
+
+        for (PlaylistItem item : returnList) {
+            videoIdList.add(item.getContentDetails().getVideoId());
+        }
+        return videoIdList;
+    }
+
+    public static PlaylistItemListResponse getPlaylistItemsForPlaylist(String playlistId, String pageToken) throws IOException {
         initialize();
 
         if (pageToken == null) {
-            return youtube.playlistItems().list("snippet").setPlaylistId(playlistId).setMaxResults(50L).execute();
+            return youtube.playlistItems()
+                    .list("contentDetails")
+                    .setPlaylistId(playlistId)
+                    .setMaxResults(50L)
+                    .execute();
         } else {
-            return youtube.playlistItems().list("snippet").setPlaylistId(playlistId).setPageToken(pageToken).setMaxResults(50L).execute();
+            return youtube.playlistItems()
+                    .list("contentDetails")
+                    .setPlaylistId(playlistId)
+                    .setPageToken(pageToken)
+                    .setMaxResults(50L)
+                    .execute();
         }
     }
 
@@ -105,4 +156,5 @@ public class YouTubeUtil {
             throw new RuntimeException();
         }
     }
+
 }
