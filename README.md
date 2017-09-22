@@ -1,7 +1,9 @@
 # CommentVampire
 Will suck comments from youtube channels and put them into a mysql database :-)
 
-This is a maven project and should be fine with IntelliJ and Eclipse.
+This has no fancy data model nor does it follow DRY.
+Just a tool to get hold of youtube comments.
+
 
 ## Prerequisite
 - You will need a google api key which needs to be placed under src/main/resources/client_secrets.json

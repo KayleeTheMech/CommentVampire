@@ -3,15 +3,17 @@ package CommandLineApplication;
 import com.google.api.services.youtube.model.CommentThread;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+import youTubeHelper.YouTubeUtil;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-import static databaseHelper.DatabaseUtil.*;
-import static youTubeHelper.YouTubeUtil.getAllComments;
+import static databaseHelper.DatabaseUtil.storeYoutubeComments;
 
 public class Main {
+
+    private static YouTubeUtil youTubeUtil = null;
 
     /**
      * Entry Point. Decides where to go from the given CLI options.
@@ -27,6 +29,12 @@ public class Main {
             // just print the help and terminate
             printHelp();
             return;
+        }
+
+        try {
+            youTubeUtil = new YouTubeUtil(YouTubeUtil.getYouTubeObject());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         if (isVideoIdSet(options)) {
@@ -69,10 +77,13 @@ public class Main {
      */
     private static void processVideoId(String videoId) {
         System.out.println("Called processVideoId with videoId: " + videoId);
+        if (videoId == null) {
+            return;
+        }
         List<CommentThread> videoComments;
         // trying to retrieve comments
         try {
-            videoComments = getAllComments(videoId);
+            videoComments = youTubeUtil.getAllComments(videoId);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -94,6 +105,13 @@ public class Main {
      */
     private static void processChannelId(String channelId) {
         System.out.println("Called processChannelId with Id:" + channelId);
+        try {
+            youTubeUtil.getAllVideoIds(channelId).forEach(videoId -> {
+                processVideoId(videoId);
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
