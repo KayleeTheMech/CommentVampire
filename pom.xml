@@ -4,7 +4,7 @@
     <groupId>org.haeqs</groupId>
     <artifactId>CommentVampire</artifactId>
     <packaging>jar</packaging>
-    <version>0.0.3</version>
+    <version>0.1.0</version>
     <name>Comment Vampire</name>
     <organization>
         <name>HAEQS - queer feminist hackspace berlin</name>
